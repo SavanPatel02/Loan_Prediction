@@ -1,0 +1,59 @@
+Docker command
+docker compose up --build
+docker compose down 
+
+to see database
+🔹 Step 1: Open new terminal
+
+Run:
+
+docker ps
+
+
+You should see a container named:
+
+loan-prediction-db
+
+🔹 Step 2: Enter the PostgreSQL container
+
+Run:
+
+docker exec -it loan-prediction-db psql -U loanuser -d loandb
+
+
+Now you are inside PostgreSQL.
+
+You will see something like:
+
+loandb=#
+
+🔹 Step 3: See available tables
+
+Type:
+
+\dt
+
+
+You should see:
+
+predictions
+
+🔹 Step 4: View stored predictions
+
+Now run:
+
+SELECT * FROM predictions;
+
+
+You will see rows like:
+
+ id | input_data | prediction | probability | created_at
+
+
+That means your data is successfully stored.
+
+🔹 Step 5: Exit database
+
+Type:
+
+\q

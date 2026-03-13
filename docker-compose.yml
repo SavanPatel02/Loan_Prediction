@@ -1,0 +1,90 @@
+# version: "3.9"
+
+# services:
+
+#   ml:
+#     build: ./ml
+#     container_name: loan-prediction-ml
+#     volumes:
+#       - ./data:/data
+#       - ./api:/model_output
+#     networks:
+#       - loan_net
+
+#   api:
+#     build: ./api
+#     container_name: loan-prediction-api
+#     volumes:
+#       - ./api:/app
+#     ports:
+#       - "8000:8000"
+#     networks:
+#       - loan_net
+
+#   ui:
+#     build: ./ui
+#     container_name: loan-prediction-ui
+#     ports:
+#       - "8501:8501"
+#     networks:
+#       - loan_net
+
+# networks:
+#   loan_net:
+#     driver: bridge
+
+services:
+
+  ml:
+    build: ./ml
+    container_name: loan-prediction-ml
+    volumes:
+      - ./data:/data
+      - ./api:/model_output
+    networks:
+      - loan_net
+
+  api:
+    build: ./api
+    container_name: loan-prediction-api
+    volumes:
+      - ./api:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - loan_net
+
+  ui:
+    build: ./ui
+    container_name: loan-prediction-ui
+    ports:
+      - "8501:8501"
+    depends_on:
+      - api
+    networks:
+      - loan_net
+
+  db:
+    image: postgres:15
+    container_name: loan-prediction-db
+    restart: always
+    environment:
+      POSTGRES_USER: loanuser
+      POSTGRES_PASSWORD: loanpass
+      POSTGRES_DB: loandb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - loan_net
+
+
+networks:
+  loan_net:
+    driver: bridge
+
+volumes:
+  pgdata:
